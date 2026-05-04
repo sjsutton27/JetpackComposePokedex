@@ -1,13 +1,10 @@
 package com.example.jetpackcomposepokedex.pokemonlist
 
-import android.content.IntentSender.OnFinished
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetpackcomposepokedex.repository.PokemonRepository
@@ -45,7 +42,7 @@ class PokemonListViewModel(
         }else{
             cachedPokemonList
         }
-        viewModelScope.launch(Dispatchers.Default){
+        viewModelScope.launch(Dispatchers.IO){
             if(query.isEmpty()){
                 pokemonList.value = cachedPokemonList
                 isSearching.value = false
@@ -67,13 +64,15 @@ class PokemonListViewModel(
     fun loadPokemonPaginated(){
         viewModelScope.launch{
             isLoading.value = true
-            val result = repository.getPokemonList(PAGE_SIZE, curPage * PAGE_SIZE)
-            when(result){
+            when(val result = repository.getPokemonList(
+                limit = PAGE_SIZE,
+                offset = curPage * PAGE_SIZE
+            )){
                 is Resource.Success ->{
                     //checks if we went over the the PAGE_Size
                     endReached.value = curPage * PAGE_SIZE >= result.data!!.count
-                    val pokedexEntries = result.data.results.mapIndexed{index, entry ->
-                        val number= if(entry.url.endsWith("/")){
+                    val pokedexEntries = result.data.results.mapIndexed{ _, entry ->
+                        val number= if(entry.url.endsWith(suffix = "/")){
                             entry.url.dropLast(1).takeLastWhile { it.isDigit() }
                         }else{
                             entry.url.takeLastWhile { it.isDigit() }

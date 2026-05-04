@@ -6,11 +6,9 @@ import com.example.jetpackcomposepokedex.data.remote.responses.PokemonList
 import com.example.jetpackcomposepokedex.util.Resource
 
 
-
 class PokemonRepository(
     private val api: PokeApi
 ){
-
     suspend fun getPokemonList(limit: Int, offset: Int): Resource<PokemonList> {
         val response = try{
             api.getPokemonList(limit, offset)

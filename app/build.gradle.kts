@@ -6,12 +6,13 @@ plugins {
 
 android {
     namespace = "com.example.jetpackcomposepokedex"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.jetpackcomposepokedex"
         minSdk = 24
-        targetSdk = 35
+        //noinspection EditedTargetSdkVersion
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -48,7 +49,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation(libs.androidx.navigation.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -85,4 +86,7 @@ dependencies {
 
     // Palette
     implementation(libs.androidx.palette)
+
+    implementation(libs.androidx.material.icons.extended)
+
 }
