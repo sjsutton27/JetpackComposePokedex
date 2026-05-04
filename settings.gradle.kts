@@ -1,0 +1,19 @@
+pluginManagement {
+    repositories {
+        google() // No filters
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "JetpackComposePokedex"
+include(":app")
+ 
