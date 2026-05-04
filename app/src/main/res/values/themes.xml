@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Theme.MySplashScreen" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@color/light_yellow</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/pokemonsplashscreen</item>
+        <item name="postSplashScreenTheme">@style/Theme.JetpackComposePokedex</item>
+    </style>
+
     <style name="Theme.JetpackComposePokedex" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
