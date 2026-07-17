@@ -23,10 +23,10 @@ class PokemonListViewModel(
 
     private var curPage = 0
 
-    var pokemonList = mutableStateOf<List<PokedexListEntry>>(listOf())
-    var loadError = mutableStateOf("")
-    var isLoading = mutableStateOf(false)
-    var endReached = mutableStateOf(false)
+    var pokemonList = mutableStateOf<List<PokedexListEntry>>(value = listOf())
+    var loadError = mutableStateOf(value = "")
+    var isLoading = mutableStateOf(value = false)
+    var endReached = mutableStateOf(value = false)
 
     private var cachedPokemonList = listOf<PokedexListEntry>()
     private var isSearchStarting = true
@@ -42,15 +42,15 @@ class PokemonListViewModel(
         }else{
             cachedPokemonList
         }
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(context = Dispatchers.IO){
             if(query.isEmpty()){
                 pokemonList.value = cachedPokemonList
                 isSearching.value = false
                 isSearchStarting = true
                 return@launch
             }
-            val results = listToSearch.filter{
-                it.pokemonName.contains(query.trim(), ignoreCase = true) || it.number.toString() == query.trim()
+            val results = listToSearch.filter{ result ->
+                result.pokemonName.contains(other = query.trim(), ignoreCase = true) || result.number.toString() == query.trim()
             }
             if(isSearchStarting){
                 cachedPokemonList = pokemonList.value
@@ -69,13 +69,20 @@ class PokemonListViewModel(
                 offset = curPage * PAGE_SIZE
             )){
                 is Resource.Success ->{
-                    //checks if we went over the the PAGE_Size
-                    endReached.value = curPage * PAGE_SIZE >= result.data!!.count
-                    val pokedexEntries = result.data.results.mapIndexed{ _, entry ->
+                    //checks if we went over the PAGE_Size
+                    val pokemonResponse = result.data
+
+                    if (pokemonResponse == null) {
+                        loadError.value = "Failed to load Pokémon."
+                        isLoading.value = false
+                        return@launch
+                    }
+                    endReached.value = curPage * PAGE_SIZE >= pokemonResponse.count
+                    val pokedexEntries = pokemonResponse.results.mapIndexed{ _, entry ->
                         val number= if(entry.url.endsWith(suffix = "/")){
-                            entry.url.dropLast(1).takeLastWhile { it.isDigit() }
+                            entry.url.dropLast(n = 1).takeLastWhile { character -> character.isDigit() }
                         }else{
-                            entry.url.takeLastWhile { it.isDigit() }
+                            entry.url.takeLastWhile { character -> character.isDigit() }
                         }
                         val url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${number}.png"
                         PokedexListEntry(entry.name.uppercase(Locale.ROOT), url, number.toInt())
@@ -86,7 +93,7 @@ class PokemonListViewModel(
                     pokemonList.value += pokedexEntries
                 }
                 is Resource.Error ->{
-                    loadError.value = result.message!!
+                    loadError.value = result.message ?: "Failed to load Pokémon."
                     isLoading.value = false
 
                 }

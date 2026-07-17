@@ -10,9 +10,10 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-// Koin module for dependency injection, defines our dependencies
+// KOIN module for dependency injection, defines our dependencies
 val appModule = module {
 
+    //Retrofit Builder will create the API interface for us
     single<PokeApi> {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -21,10 +22,11 @@ val appModule = module {
             .create(PokeApi::class.java)
     }
 
+    // Single instance of the PokemonRepository this will be used in our ViewModels and used with KOIN to inject it into our ViewModels
     single {
-        PokemonRepository(get())
+        PokemonRepository(api = get())
     }
 
-    viewModel { PokemonListViewModel(get()) }
-    viewModel { PokemonDetailViewModel(get()) }
+    viewModel { PokemonListViewModel(repository = get()) }
+    viewModel { PokemonDetailViewModel(repository = get()) }
 }

@@ -9,11 +9,13 @@ import com.example.jetpackcomposepokedex.util.Resource
 class PokemonRepository(
     private val api: PokeApi
 ){
+    //Dependency injection for the repository
+    // These are the functions that will be used to fetch data from the API. Which will be used in our ViewModels
     suspend fun getPokemonList(limit: Int, offset: Int): Resource<PokemonList> {
         val response = try{
             api.getPokemonList(limit, offset)
         }catch(e : Exception){
-            return Resource.Error("Unknown Error Occurred")
+            return Resource.Error(message = "Unknown Error Occurred")
         }
         return Resource.Success(response)
 
@@ -23,9 +25,9 @@ class PokemonRepository(
         val response = try{
             api.getPokemonInfo(pokemonName)
         }catch(e : Exception){
-            return Resource.Error("Unknown Error Occurred")
+            return Resource.Error(message = "Unknown Error Occurred")
         }
-        return Resource.Success(response)
+        return Resource.Success(data = response)
 
     }
 }
