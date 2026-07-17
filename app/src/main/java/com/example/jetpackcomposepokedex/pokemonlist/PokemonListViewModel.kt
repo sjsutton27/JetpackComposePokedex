@@ -16,7 +16,9 @@ import com.example.jetpackcomposepokedex.util.Resource
 import kotlinx.coroutines.Dispatchers
 import java.util.Locale
 
-
+/**
+ * PokemonListViewModel is a ViewModel class that is responsible for loading and managing the list of Pokémon.
+ * @param repository is an instance of the PokemonRepository class that is used to fetch the Pokémon data.*/
 class PokemonListViewModel(
     private val repository: PokemonRepository
 ) : ViewModel(){
@@ -30,7 +32,7 @@ class PokemonListViewModel(
 
     private var cachedPokemonList = listOf<PokedexListEntry>()
     private var isSearchStarting = true
-    var isSearching = mutableStateOf(false)
+    var isSearching = mutableStateOf(value = false)
 
     init{
         loadPokemonPaginated()
@@ -60,7 +62,9 @@ class PokemonListViewModel(
             isSearching.value = true
         }
     }
-
+    // loadPokemonPaginated is a function that loads the next page of Pokémon data from the API.
+    // It uses the repository to fetch the data and updates the UI accordingly.
+    // PAGE_SIZE is the number of Pokémon to load per page.
     fun loadPokemonPaginated(){
         viewModelScope.launch{
             isLoading.value = true
@@ -85,7 +89,11 @@ class PokemonListViewModel(
                             entry.url.takeLastWhile { character -> character.isDigit() }
                         }
                         val url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${number}.png"
-                        PokedexListEntry(entry.name.uppercase(Locale.ROOT), url, number.toInt())
+                        PokedexListEntry(
+                            pokemonName = entry.name.uppercase(locale = Locale.ROOT),
+                            imageUrl = url,
+                            number = number.toInt()
+                        )
                     }
                     curPage++
                     loadError.value = ""
@@ -97,14 +105,11 @@ class PokemonListViewModel(
                     isLoading.value = false
 
                 }
-
-                is Resource.Loading -> {
-
-                }
             }
         }
     }
 
+    // Calculate the dominant color of the image and return it as a Color object
     fun calcDominantColor(drawable: Drawable, onFinished: (Color) -> Unit){
         val bmp = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
