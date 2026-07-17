@@ -113,6 +113,10 @@ class PokemonListViewModel(
                     isLoading.value = false
 
                 }
+
+                is Resource.Loading ->{
+                    isLoading.value = true
+                }
             }
         }
     }
