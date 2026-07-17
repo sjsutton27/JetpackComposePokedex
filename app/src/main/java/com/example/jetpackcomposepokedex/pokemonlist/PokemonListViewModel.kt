@@ -44,7 +44,8 @@ class PokemonListViewModel(
         }else{
             cachedPokemonList
         }
-        viewModelScope.launch(context = Dispatchers.IO){
+        // Use Dispatcher.Default for the CPU operation of filtering the list
+        viewModelScope.launch(context = Dispatchers.Default){
             if(query.isEmpty()){
                 pokemonList.value = cachedPokemonList
                 isSearching.value = false
@@ -95,6 +96,13 @@ class PokemonListViewModel(
                             number = number.toInt()
                         )
                     }
+                    /**
+                     * curPage is the current page of Pokémon. Being incremented to load the next
+                     * page of Pokémon.
+                     * loadError is the error message if the API call fails.
+                     * isLoading is a boolean that is set to true while the API call is in progress.
+                     * pokemonList is that actual list of Pokémon loading in the pokedexEntries.
+                     * */
                     curPage++
                     loadError.value = ""
                     isLoading.value = false

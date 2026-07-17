@@ -162,18 +162,19 @@ fun PokemonList(
     val isLoading by remember { viewModel.isLoading }
     val isSearching by remember { viewModel.isSearching }
 
-    LazyColumn (contentPadding = PaddingValues(16.dp)){
+    LazyColumn (contentPadding = PaddingValues(all = 16.dp)){
         val itemCount = if(pokemonList.size % 2 == 0){
             pokemonList.size / 2
         }else{
             pokemonList.size / 2 + 1
         }
 
-        items(itemCount){
-            if(it >- itemCount - 1 && !endReached && !isLoading && !isSearching){
+        items(itemCount){ item ->
+            // the if statement is used to avoid duplication, load pokemon once, and load more items when scrolling
+            if(item >- itemCount - 1 && !endReached && !isLoading && !isSearching){
                     viewModel.loadPokemonPaginated()
             }
-            PokedexRow(rowIndex = it, entries = pokemonList, navController = navController)
+            PokedexRow(rowIndex = item, entries = pokemonList, navController = navController)
         }
     }
 
@@ -299,6 +300,7 @@ fun PokedexRow(
     }
 }
 
+//RetrySection is a composable that is used to display a retry button if the API call fails.
 @Composable
 fun RetrySection(
     error: String,
