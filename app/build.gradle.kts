@@ -84,11 +84,13 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
 
-    // Palette
+    // Palette, used to determine dominent color for our Pokémon
     implementation(libs.androidx.palette)
 
+    // Icons
     implementation(libs.androidx.material.icons.extended)
 
+    //SplashScreen
     implementation(libs.androidx.core.splashscreen.v101)
 
 }
